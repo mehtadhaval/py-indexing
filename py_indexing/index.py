@@ -34,6 +34,19 @@ class DataWrapper:
         return self._data.__hash__()
 
 
+class DataIndex:
+    """
+    Interface that should be implemented by all objects that are to be indexed
+    """
+
+    def terms(self):
+        raise NotImplementedError("Method not implemented")
+
+    def index(self, index_engine):
+        for tag_index, tag in enumerate(self.terms()):
+            index_engine.index(key=index_engine.normalize(tag), obj=self, index=tag_index)
+
+
 class ResultWrapper:
     """
     Wraps data and fdi

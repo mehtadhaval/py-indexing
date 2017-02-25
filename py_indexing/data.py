@@ -1,4 +1,7 @@
-class Page:
+from py_indexing.index import DataIndex
+
+
+class Page(DataIndex):
     """
     Represents a page object
     """
@@ -9,19 +12,18 @@ class Page:
         self._tags = tags
         self._id = id
 
+    def terms(self):
+        return self._tags
+
+    @property
+    def id(self):
+        return self._id
+
     def __repr__(self):
         return "P{0}".format(self._id)
 
     def __str__(self):
         return "P{0} {1}".format(self._id, " ".join(self._tags))
-
-    def index(self, index_engine):
-        for tag_index, tag in enumerate(self._tags):
-            index_engine.index(key=index_engine.normalize(tag), obj=self, index=tag_index)
-
-    @property
-    def id(self):
-        return self._id
 
     def __eq__(self, other):
         return self._id == other.id

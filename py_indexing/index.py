@@ -76,6 +76,22 @@ class ResultWrapper:
         return self._data <= other.data if self._score == other.score else self._score <= other.score
 
 
+class Query:
+
+    def __init__(self, query):
+        if isinstance(query, str):
+            query = query.split()
+        self._terms = query
+
+    @property
+    def terms(self):
+        return self._terms
+
+    @staticmethod
+    def calculate_score(term_weight, obj_weight):
+        return term_weight*obj_weight
+
+
 class IndexEngine:
 
     def index(self, key, weight, obj):
@@ -126,15 +142,14 @@ class InverseIndexEngine(IndexEngine):
         :param page_size: Max no of pages to return
         :return: List of objects matching the query
         """
-        if isinstance(query, str):
-            query = query.split()
+        query_terms = query.terms
         results_map = {}
-        for tag_index, tag in enumerate(query):
-            tag_weight = self._max_weight - tag_index
+        for term_index, query_term in enumerate(query_terms):
+            term_weight = self._max_weight - term_index
             try:
-                obj_list = self._index[self.normalize(tag)]
+                obj_list = self._index[self.normalize(query_term)]
                 for obj in obj_list:
-                    score = tag_weight * obj.weight
+                    score = query.calculate_score(term_weight, obj.weight)
                     try:
                         result_obj = results_map[obj]
                         result_obj.add(score)

@@ -1,5 +1,5 @@
 from py_indexing.data import Page
-from py_indexing.index import InverseIndexEngine
+from py_indexing.index import InverseIndexEngine, Query
 
 
 def search_data(data_str):
@@ -13,7 +13,7 @@ def search_data(data_str):
             page = Page(id=page_count, tags=data)
             page.index(index_engine)
         elif data_type == "Q":
-            queries.append(data)
+            queries.append(Query(data))
         else:
             continue
 
